@@ -8,97 +8,78 @@ The system tracks daily account balances, calculates moving averages, monitors i
 ## Mermaid Data Flow Visualization
 
 graph TD
-    %% Define Styles for GitHub Light/Dark Mode Compatibility
-    classDef web fill:#E1F5FE,stroke:#01579B,stroke-width:2px,color:#000;
-    classDef sp fill:#FFF3E0,stroke:#E65100,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
-    classDef table fill:#E8F5E9,stroke:#1B5E20,stroke-width:2px,color:#000;
-    classDef view fill:#F3E5F5,stroke:#4A148C,stroke-width:2px,color:#000;
-    classDef output fill:#FFEBEE,stroke:#B71C1C,stroke-width:2px,color:#000;
-
-    %% 1. Web / External Sources
-    subgraph "External Sources"
-        Web_CPI[("🌐 BLS / Inflation Data")]:::web
-        Web_Banks[("🌐 Financial Institutions")]:::web
-        Web_Accounts[("🌐 Accounts & Taxable Type")]:::web
-        Web_Market[("🌐 Stock Market Data")]:::web
+    %% Nodes
+    subgraph External_Sources ["External Sources"]
+        Web_CPI["BLS / Inflation Data"]
+        Web_Banks["Financial Institutions"]
+        Web_Accounts["Accounts & Taxable Type"]
+        Web_Market["Stock Market Data"]
     end
 
-    %% 2. Ingestion Layer
-    subgraph "Ingestion Stored Procedures"
-        SP_UpsertCPI[usp_UpsertCPILatest]:::sp
-        SP_AddBal[usp_AddManualBalance]:::sp
-        SP_CalcComp[usp_CalculateCompositePrices]:::sp
+    subgraph Ingestion ["Ingestion Stored Procedures"]
+        SP_UpsertCPI[usp_UpsertCPILatest]
+        SP_AddBal[usp_AddManualBalance]
+        SP_CalcComp[usp_CalculateCompositePrices]
     end
 
-    %% 3. Data Storage
-    subgraph "Database Tables"
-        T_CPI[CPILatestNumbers]:::table
-        T_Acct[Accounts]:::table
-        T_Bal[Balances]:::table
-        T_Close[ClosingPrices]:::table
-        T_Port[Portfolio]:::table
-        T_Comp[CompositePortfolio]:::table
-        T_CashFlow[GKCashFlow]:::table
+    subgraph Database ["Database Tables"]
+        T_CPI[CPILatestNumbers]
+        T_Acct[Accounts]
+        T_Bal[Balances]
+        T_Close[ClosingPrices]
+        T_Port[Portfolio]
+        T_Comp[CompositePortfolio]
+        T_CashFlow[GKCashFlow]
     end
 
-    %% 4. Calculation & Views
-    subgraph "Calculation Engine"
-        SP_Master[usp_GKUpdate]:::sp
-        SP_UpdateTax[usp_GKUpdateTaxableBalancesByDate]:::sp
-        SP_UpdateCPI[usp_GKUpdateCPIU]:::sp
-        SP_CalcMain[usp_GKCalculationUpdate]:::sp
-        V_MovAvg[vw_CompositePortfolio_MovingAverage]:::view
-        SP_Strat[usp_GetWithdrawalStrategy]:::sp
+    subgraph Calculation ["Calculation Engine"]
+        SP_Master[usp_GKUpdate]
+        SP_UpdateTax[usp_GKUpdateTaxableBalancesByDate]
+        SP_UpdateCPI[usp_GKUpdateCPIU]
+        SP_CalcMain[usp_GKCalculationUpdate]
+        V_MovAvg[vw_CompositePortfolio_MovingAverage]
+        SP_Strat[usp_GetWithdrawalStrategy]
     end
 
-    %% 5. Outputs
-    subgraph "Outputs & Viz"
-        Excel[("📊 Excel / Visualizations")]:::output
-        Email[("📧 Email Alert<br/>(HTML Table)")]:::output
-        SP_Alert[usp_Alert_CompositePortfolioUpdate]:::sp
+    subgraph Outputs ["Outputs & Viz"]
+        Excel[Excel / Visualizations]
+        Email[Email Alert HTML]
+        SP_Alert[usp_Alert_CompositePortfolioUpdate]
     end
 
-    %% Relationships
-    %% External to Ingestion/Tables
-    Web_CPI -->|Scraper Script| SP_UpsertCPI
-    Web_Banks -->|Plaid/Script| T_Bal
-    Web_Banks -->|Manual Override| SP_AddBal
-    Web_Accounts -->|Setup/Config| T_Acct
-    Web_Market -->|Script| T_Close
+    %% Edge Connections
+    Web_CPI --> SP_UpsertCPI
+    Web_Banks --> T_Bal
+    Web_Banks --> SP_AddBal
+    Web_Accounts --> T_Acct
+    Web_Market --> T_Close
 
-    %% Ingestion to Tables
     SP_UpsertCPI --> T_CPI
     SP_AddBal --> T_Bal
     T_Close --> SP_CalcComp
     T_Port --> SP_CalcComp
     SP_CalcComp --> T_Comp
     
-    %% Account Metadata Flow
-    T_Acct -.->|Tax Type Mapping| SP_UpdateTax
+    T_Acct -.-> SP_UpdateTax
 
-    %% Calculation Flow (Orchestration)
-    SP_Master -->|1. Aggregates| SP_UpdateTax
-    SP_Master -->|2. Calc Inflation| SP_UpdateCPI
-    SP_Master -->|3. Calc Paycheck| SP_CalcMain
+    SP_Master --> SP_UpdateTax
+    SP_Master --> SP_UpdateCPI
+    SP_Master --> SP_CalcMain
 
-    %% Data dependencies for Calculation
     T_Bal --> SP_UpdateTax
     T_CPI --> SP_UpdateCPI
-    T_CashFlow -.->|Read Previous| SP_CalcMain
-    SP_UpdateTax -->|Write| T_CashFlow
-    SP_UpdateCPI -->|Write| T_CashFlow
-    SP_CalcMain -->|Write| T_CashFlow
+    T_CashFlow -.-> SP_CalcMain
+    SP_UpdateTax --> T_CashFlow
+    SP_UpdateCPI --> T_CashFlow
+    SP_CalcMain --> T_CashFlow
 
-    %% Withdrawal Strategy Logic
     T_Comp --> V_MovAvg
     V_MovAvg --> SP_Strat
-    SP_Strat -->|Guardrail Decision| SP_CalcMain
+    SP_Strat --> SP_CalcMain
 
-    %% Outputs
     T_CashFlow --> Excel
     V_MovAvg --> SP_Alert
-    SP_Alert --> Email
-	
+    SP_Alert --> Email	
 	
 ## Core Logic & Data Flow
 The database operates on a daily or periodic update cycle orchestrated by the master procedure `usp_GKUpdate`. 
