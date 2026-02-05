@@ -8,18 +8,18 @@ The system tracks daily account balances, calculates moving averages, monitors i
 ## Mermaid Data Flow Visualization
 
 graph TD
-    %% Define Styles
-    classDef web fill:#E1F5FE,stroke:#01579B,stroke-width:2px;
-    classDef sp fill:#FFF3E0,stroke:#E65100,stroke-width:2px,stroke-dasharray: 5 5;
-    classDef table fill:#E8F5E9,stroke:#1B5E20,stroke-width:2px;
-    classDef view fill:#F3E5F5,stroke:#4A148C,stroke-width:2px;
-    classDef output fill:#FFEBEE,stroke:#B71C1C,stroke-width:2px;
+    %% Define Styles for GitHub Light/Dark Mode Compatibility
+    classDef web fill:#E1F5FE,stroke:#01579B,stroke-width:2px,color:#000;
+    classDef sp fill:#FFF3E0,stroke:#E65100,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef table fill:#E8F5E9,stroke:#1B5E20,stroke-width:2px,color:#000;
+    classDef view fill:#F3E5F5,stroke:#4A148C,stroke-width:2px,color:#000;
+    classDef output fill:#FFEBEE,stroke:#B71C1C,stroke-width:2px,color:#000;
 
     %% 1. Web / External Sources
     subgraph "External Sources"
         Web_CPI[("🌐 BLS / Inflation Data")]:::web
         Web_Banks[("🌐 Financial Institutions")]:::web
-		Web_Accounts[("🌐 Accounts & Taxable Type")]:::web
+        Web_Accounts[("🌐 Accounts & Taxable Type")]:::web
         Web_Market[("🌐 Stock Market Data")]:::web
     end
 
@@ -33,6 +33,7 @@ graph TD
     %% 3. Data Storage
     subgraph "Database Tables"
         T_CPI[CPILatestNumbers]:::table
+        T_Acct[Accounts]:::table
         T_Bal[Balances]:::table
         T_Close[ClosingPrices]:::table
         T_Port[Portfolio]:::table
@@ -58,10 +59,11 @@ graph TD
     end
 
     %% Relationships
-    %% External to Ingestion
+    %% External to Ingestion/Tables
     Web_CPI -->|Scraper Script| SP_UpsertCPI
     Web_Banks -->|Plaid/Script| T_Bal
     Web_Banks -->|Manual Override| SP_AddBal
+    Web_Accounts -->|Setup/Config| T_Acct
     Web_Market -->|Script| T_Close
 
     %% Ingestion to Tables
@@ -70,6 +72,9 @@ graph TD
     T_Close --> SP_CalcComp
     T_Port --> SP_CalcComp
     SP_CalcComp --> T_Comp
+    
+    %% Account Metadata Flow
+    T_Acct -.->|Tax Type Mapping| SP_UpdateTax
 
     %% Calculation Flow (Orchestration)
     SP_Master -->|1. Aggregates| SP_UpdateTax
@@ -93,7 +98,8 @@ graph TD
     T_CashFlow --> Excel
     V_MovAvg --> SP_Alert
     SP_Alert --> Email
-
+	
+	
 ## Core Logic & Data Flow
 The database operates on a daily or periodic update cycle orchestrated by the master procedure `usp_GKUpdate`. 
 
