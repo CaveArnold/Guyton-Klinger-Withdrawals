@@ -7,80 +7,8 @@ The system tracks daily account balances, calculates moving averages, monitors i
 
 ## Mermaid Data Flow Visualization
 
-graph TD
-    %% Nodes
-    subgraph External_Sources ["External Sources"]
-        Web_CPI["BLS / Inflation Data"]
-        Web_Banks["Financial Institutions"]
-        Web_Accounts["Accounts & Taxable Type"]
-        Web_Market["Stock Market Data"]
-    end
+[![](https://mermaid.ink/img/pako:eNp9Vm1PIjEQ_itNE_2EnAgeyodLeNMjikcCanJwIWW3LI1LS7pdBI3__abd7e52QYjZdF77zNOZiZ_YEz7FLRxIslmhSW_GEfzOztAT6KNEiuJFYu7vFJWchPOxiKVHIzSdYatDqW6G_yVR-vdKF_PuaABunccx-oEGfBkSxQRHPaLIgWuH8LcInO8YJ9xjkHTAI8VUrEMOM7c9T8Rc6Qh7ROdoQnZkEVI02W_oQciQyDeqIGCshPeGEtEFQ7k_46XCBzygkcENobkASST10UgKj_qxLBU_Hs2fNxGVSjMQR5tceiQKMriubd_vkND4wXFIeExCUAAP1HXsktDrivXGuGohBkqp1oiIKTqSDF7hRC262AWJqC4lO080ZS78iXm5DO1TvF5QGTkOwLqaWuodiy4lRe8auqGI6FR_GQ8crIl9JKSa6s9ShEy4obrovM7jPiRa3YXifXr_YI8nqLDspQ9bFPs8YJyW33NIIuh2w_z9w_PGB2bKD6510IKOT9qSlpDOvvdNoO0UGwjy8-HrDwnjqVsB8gGcl_lQbNvbYLp9nx_Spo3wBO0tlSQogRkrSVRyA1WvTK18Sd5JaNQ02J9g9E-sNrEyi8Eez9EL-3CI7O88Gk7NF3bCC4ug1dmHKaLYDP01YeCmv6gdwuSg35PhY2lqtD4ZGn06UqdDSwEyrLi-H1DUFZxTL1kwvLCz0MXFL2eEc6tZU8ZuGv2YIRvo3JitqCRQz05uTBdRYjIzYnEWIVi7BZPdUgaT5rBQ7MqwRk3OcVtBYS_LbDZaI0cXVUtP2uAFvMmU5ARmHifsxZpcu-14e4Ep85vkE_flnMT5csjA56nL42uLTyNKDoWnKDvYlAf2DISl1o5nYrCSBW9mLctqpO8JyQsDDzNXx5OaGclbx8yUCdEzhivwTwDzcUvJmFbwmkrQgog_dcQMqxVdw0JswdGnSxKHaoZn_AvCNoT_FWJtI6WIgxVuLUkYgRQbxnqMwILIXWAQqezqecCtWt2kwK1PvAPp6rJav2o2ajX4u7m5vmpU8B63bpvV23qz_rPWbNabjUb99quCP8yll9Wb5vXXf0g_zPs?type=png)](https://mermaid.live/edit#pako:eNp9Vm1PIjEQ_itNE_2EnAgeyodLeNMjikcCanJwIWW3LI1LS7pdBI3__abd7e52QYjZdF77zNOZiZ_YEz7FLRxIslmhSW_GEfzOztAT6KNEiuJFYu7vFJWchPOxiKVHIzSdYatDqW6G_yVR-vdKF_PuaABunccx-oEGfBkSxQRHPaLIgWuH8LcInO8YJ9xjkHTAI8VUrEMOM7c9T8Rc6Qh7ROdoQnZkEVI02W_oQciQyDeqIGCshPeGEtEFQ7k_46XCBzygkcENobkASST10UgKj_qxLBU_Hs2fNxGVSjMQR5tceiQKMriubd_vkND4wXFIeExCUAAP1HXsktDrivXGuGohBkqp1oiIKTqSDF7hRC262AWJqC4lO080ZS78iXm5DO1TvF5QGTkOwLqaWuodiy4lRe8auqGI6FR_GQ8crIl9JKSa6s9ShEy4obrovM7jPiRa3YXifXr_YI8nqLDspQ9bFPs8YJyW33NIIuh2w_z9w_PGB2bKD6510IKOT9qSlpDOvvdNoO0UGwjy8-HrDwnjqVsB8gGcl_lQbNvbYLp9nx_Spo3wBO0tlSQogRkrSVRyA1WvTK18Sd5JaNQ02J9g9E-sNrEyi8Eez9EL-3CI7O88Gk7NF3bCC4ug1dmHKaLYDP01YeCmv6gdwuSg35PhY2lqtD4ZGn06UqdDSwEyrLi-H1DUFZxTL1kwvLCz0MXFL2eEc6tZU8ZuGv2YIRvo3JitqCRQz05uTBdRYjIzYnEWIVi7BZPdUgaT5rBQ7MqwRk3OcVtBYS_LbDZaI0cXVUtP2uAFvMmU5ARmHifsxZpcu-14e4Ep85vkE_flnMT5csjA56nL42uLTyNKDoWnKDvYlAf2DISl1o5nYrCSBW9mLctqpO8JyQsDDzNXx5OaGclbx8yUCdEzhivwTwDzcUvJmFbwmkrQgog_dcQMqxVdw0JswdGnSxKHaoZn_AvCNoT_FWJtI6WIgxVuLUkYgRQbxnqMwILIXWAQqezqecCtWt2kwK1PvAPp6rJav2o2ajX4u7m5vmpU8B63bpvV23qz_rPWbNabjUb99quCP8yll9Wb5vXXf0g_zPs)
 
-    subgraph Ingestion ["Ingestion Stored Procedures"]
-        SP_UpsertCPI[usp_UpsertCPILatest]
-        SP_AddBal[usp_AddManualBalance]
-        SP_CalcComp[usp_CalculateCompositePrices]
-    end
-
-    subgraph Database ["Database Tables"]
-        T_CPI[CPILatestNumbers]
-        T_Acct[Accounts]
-        T_Bal[Balances]
-        T_Close[ClosingPrices]
-        T_Port[Portfolio]
-        T_Comp[CompositePortfolio]
-        T_CashFlow[GKCashFlow]
-    end
-
-    subgraph Calculation ["Calculation Engine"]
-        SP_Master[usp_GKUpdate]
-        SP_UpdateTax[usp_GKUpdateTaxableBalancesByDate]
-        SP_UpdateCPI[usp_GKUpdateCPIU]
-        SP_CalcMain[usp_GKCalculationUpdate]
-        V_MovAvg[vw_CompositePortfolio_MovingAverage]
-        SP_Strat[usp_GetWithdrawalStrategy]
-    end
-
-    subgraph Outputs ["Outputs & Viz"]
-        Excel[Excel / Visualizations]
-        Email[Email Alert HTML]
-        SP_Alert[usp_Alert_CompositePortfolioUpdate]
-    end
-
-    %% Edge Connections
-    Web_CPI --> SP_UpsertCPI
-    Web_Banks --> T_Bal
-    Web_Banks --> SP_AddBal
-    Web_Accounts --> T_Acct
-    Web_Market --> T_Close
-
-    SP_UpsertCPI --> T_CPI
-    SP_AddBal --> T_Bal
-    T_Close --> SP_CalcComp
-    T_Port --> SP_CalcComp
-    SP_CalcComp --> T_Comp
-    
-    T_Acct -.-> SP_UpdateTax
-
-    SP_Master --> SP_UpdateTax
-    SP_Master --> SP_UpdateCPI
-    SP_Master --> SP_CalcMain
-
-    T_Bal --> SP_UpdateTax
-    T_CPI --> SP_UpdateCPI
-    T_CashFlow -.-> SP_CalcMain
-    SP_UpdateTax --> T_CashFlow
-    SP_UpdateCPI --> T_CashFlow
-    SP_CalcMain --> T_CashFlow
-
-    T_Comp --> V_MovAvg
-    V_MovAvg --> SP_Strat
-    SP_Strat --> SP_CalcMain
-
-    T_CashFlow --> Excel
-    V_MovAvg --> SP_Alert
-    SP_Alert --> Email	
-	
 ## Core Logic & Data Flow
 The database operates on a daily or periodic update cycle orchestrated by the master procedure `usp_GKUpdate`. 
 
