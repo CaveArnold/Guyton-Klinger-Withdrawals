@@ -1,104 +1,84 @@
-# Guyton-Klinger-Withdrawals Database Documentation
+# Guyton-Klinger Withdrawals Database Documentation
+
+**Database Name:** `[Guyton-Klinger-Withdrawals]`
+**Developer:** Cave Arnold
+**AI Assistant:** Gemini
+**Script Date:** February 10, 2026
 
 ## Overview
-The **Guyton-Klinger-Withdrawals** database is a specialized financial engine designed to automate a retirement withdrawal strategy. It implements the "Guardrail" decision rules (Guyton-Klinger) to dynamically adjust spending based on portfolio performance and inflation (CPI). 
-
-The system tracks daily account balances, calculates moving averages, monitors inflation, and generates a specific "Paycheck" amount and funding source (Cash vs. Asset Sale) for every processing period.
+This database implements a financial withdrawal strategy based on the Guyton-Klinger decision rules. It manages account balances, tracks portfolio performance against moving averages, calculates inflation adjustments (CPI-U), and enforces capital preservation and prosperity guardrails to determine safe withdrawal rates.
 
 ## Mermaid Data Flow Visualization
 
-[![](https://mermaid.ink/img/pako:eNqVV91u2zYUfhVCRYsWSBzLtpxEGwr4Ny1qL0btJMCSIaAlWiaiiAJJJXHrvsCwiwF7gF3u9fYIO6RE_dhyh_rCMcnvHJ7znXM-KV8tj_nEcq2A43iNFsO7CMHn9Ws0JCsaETSXm5AItGIcXVD5IVmiCQ3W8mSI-QOagi0asMcYS7qkIZWb1NwLsRDgAD2TJVrRMHRfjeyxMx4dCcnZA3FfNW3n9LyfLY-fqS_Xbit-OfJYyDgcN5s_7bgSceZpPB63R83c06jr2M3mvqdsw8dijTnHGxc5yPmOf4mXITHBno2d0Xl-hd13Rq3mjwT7RMmzCbc9csZO7qvTsztngx_xxRIZJzJPftQfFTT2T-2B_X_e8pLaDXQDBTlBoxdJeIRDNGcJ94hIESJZpl1wZ-0BrBSiPuDifjD7ePv2zvr37z_-RP3JHFx-jFYhdAGL0BBLfGe9-811XSh_1a6PoweRW45phCOPwjUfIyGpTJS9OGTb8zyWRLIwNxvoDVrgF12-xSYmh-yn0LFE5tZzyTzoYL1ZGzOJ_BJ3rQYEGRChU5zgDeF7pBXn4JsTH80484if8Cp_89n9VSwIl4rERMTFaoIlOFBBiLiC7_l-H4caDD-nOEpwCBtAHqlBD3DoqaHUeLVIoDJE7TBBJZlxChUt21UzbTc0HToJHJC9NNXhEgsgW1FeSW2hGyPP5JfkcUm4vkpPVxkIxZO3poK1CJVxlmQ9YBAyQW7VN42CIqs93Ixxeau-ViykrN6Voqtg6PtYUJRxyJ5vLz6Znzu4Kp-dBjJFUL3xBl2DOOyPXBkzigLQ3p2mmWIBQ6mLevHpKvaB4pripwcwDxVgNh-Gzv5m-D1r05jGGtZXB_psimmUYUsJ1Ed3fT9lT72n4Pbp-X6fa3UIdew9EdV1ylaJaOXCueRYprcReUPl2uf4GYd6mwSbwy3tNNClVtF92rN9XZYvZcZHLx4JU7X46_d0BTJ3TQXMHv2Cy1KVKnTJ9BFTY_pPukK9EGb85yU_ef_2w2I6SYfn3QEHauQVPp149auGsH2Sq0l_JmkxxJrGIt_NlV2yQtBOslGOSvqOjo_fb-ce0EQ4gr80ltuKdhVoreoaPwsx9U8MWs9wHSxVMHQJtebUJ9tC4wp0ru46DiKT-GTAohUNtpl6FNBMxLOAs6u1OpToKNQZMi_nW85J-UhVLD9L48oO8ggz_3q7JLnmUBWp_qy0YS7Lz_JYs9zRlEjsKy1WImN8q9zRcQOShanWTzx4isUxzM62IgCl3Mvaolyht5fcWwMdXO-9y0NLNUYzCS8LvSDgJFBSvut5H95KVa54D9hW9KTOpJ2ZzPAGgvEetmVRKUWvn0Y-iaG9CbwuZG-jpZwMM6ZO-7EuTEfXBFUoesrqZ4LVo5s8UZaInZh2RVbnccNhLLclPzs4M0yHceaCQ7CcikL0kFE9NGEB9fJUTF8ZsU0PzMpQoI3z6_VK332RYA7-Qa-GxKPClLGmKBU9LVMIF2ixrL9Yi1kxW2qVmiiRtI7g3xDqW67kCTmyHgmHXVhaX5XFnSXX5BGeii789MkKJ6FUgv0NzGIc_crYo7HkLAnWlrvCoYBVoqswpBg0v4CobuIDNWaWa7e0C8v9ar1Ybue0YXfPO07HaXeds_bpkbWx3Ha70YWtpt21nbNuy3a6346sL_rOZuO80zlrdlqObZ934J279e0_rYRQUQ?type=png)](https://mermaid.live/edit#pako:eNqVV91u2zYUfhVCRYsWSBzLtpxEGwr4Ny1qL0btJMCSIaAlWiaiiAJJJXHrvsCwiwF7gF3u9fYIO6RE_dhyh_rCMcnvHJ7znXM-KV8tj_nEcq2A43iNFsO7CMHn9Ws0JCsaETSXm5AItGIcXVD5IVmiCQ3W8mSI-QOagi0asMcYS7qkIZWb1NwLsRDgAD2TJVrRMHRfjeyxMx4dCcnZA3FfNW3n9LyfLY-fqS_Xbit-OfJYyDgcN5s_7bgSceZpPB63R83c06jr2M3mvqdsw8dijTnHGxc5yPmOf4mXITHBno2d0Xl-hd13Rq3mjwT7RMmzCbc9csZO7qvTsztngx_xxRIZJzJPftQfFTT2T-2B_X_e8pLaDXQDBTlBoxdJeIRDNGcJ94hIESJZpl1wZ-0BrBSiPuDifjD7ePv2zvr37z_-RP3JHFx-jFYhdAGL0BBLfGe9-811XSh_1a6PoweRW45phCOPwjUfIyGpTJS9OGTb8zyWRLIwNxvoDVrgF12-xSYmh-yn0LFE5tZzyTzoYL1ZGzOJ_BJ3rQYEGRChU5zgDeF7pBXn4JsTH80484if8Cp_89n9VSwIl4rERMTFaoIlOFBBiLiC7_l-H4caDD-nOEpwCBtAHqlBD3DoqaHUeLVIoDJE7TBBJZlxChUt21UzbTc0HToJHJC9NNXhEgsgW1FeSW2hGyPP5JfkcUm4vkpPVxkIxZO3poK1CJVxlmQ9YBAyQW7VN42CIqs93Ixxeau-ViykrN6Voqtg6PtYUJRxyJ5vLz6Znzu4Kp-dBjJFUL3xBl2DOOyPXBkzigLQ3p2mmWIBQ6mLevHpKvaB4pripwcwDxVgNh-Gzv5m-D1r05jGGtZXB_psimmUYUsJ1Ed3fT9lT72n4Pbp-X6fa3UIdew9EdV1ylaJaOXCueRYprcReUPl2uf4GYd6mwSbwy3tNNClVtF92rN9XZYvZcZHLx4JU7X46_d0BTJ3TQXMHv2Cy1KVKnTJ9BFTY_pPukK9EGb85yU_ef_2w2I6SYfn3QEHauQVPp149auGsH2Sq0l_JmkxxJrGIt_NlV2yQtBOslGOSvqOjo_fb-ce0EQ4gr80ltuKdhVoreoaPwsx9U8MWs9wHSxVMHQJtebUJ9tC4wp0ru46DiKT-GTAohUNtpl6FNBMxLOAs6u1OpToKNQZMi_nW85J-UhVLD9L48oO8ggz_3q7JLnmUBWp_qy0YS7Lz_JYs9zRlEjsKy1WImN8q9zRcQOShanWTzx4isUxzM62IgCl3Mvaolyht5fcWwMdXO-9y0NLNUYzCS8LvSDgJFBSvut5H95KVa54D9hW9KTOpJ2ZzPAGgvEetmVRKUWvn0Y-iaG9CbwuZG-jpZwMM6ZO-7EuTEfXBFUoesrqZ4LVo5s8UZaInZh2RVbnccNhLLclPzs4M0yHceaCQ7CcikL0kFE9NGEB9fJUTF8ZsU0PzMpQoI3z6_VK332RYA7-Qa-GxKPClLGmKBU9LVMIF2ixrL9Yi1kxW2qVmiiRtI7g3xDqW67kCTmyHgmHXVhaX5XFnSXX5BGeii789MkKJ6FUgv0NzGIc_crYo7HkLAnWlrvCoYBVoqswpBg0v4CobuIDNWaWa7e0C8v9ar1Ybue0YXfPO07HaXeds_bpkbWx3Ha70YWtpt21nbNuy3a6346sL_rOZuO80zlrdlqObZ934J279e0_rYRQUQ)
+[![](https://mermaid.ink/img/pako:eNqVV91OIzcUfhVrVqxYibAkJE2YdqmA7KYIWhCBRZSskGfGk8wyGae2Bwg_d71oq0rbaqVW7U2vts_Q5-kLtI_QY3vsmQkT2OaG8fn5fPydH5sbx6cBcVxnyPBkhA67gwTBb2EBdUkYJQT1xTQmXEv9GHMOcnRJPBRGcew-IfWwFZIlLhg9J-6TlXqrveZly9plFIiR25hcfTrjHxj3MAzX_KZ1Dz1_pRE86j5h1Df7d8IWWbMADdIOVhuPAtBUmABWSStsWf-2Vw9xpb9G4KmniTom3lmfpswnHJ0OnH__-PEnKUNdLDDKFAPnjfaSv_0YR8GitHz3p16g52gTJ-f8M489X1_c8H2aJgJEMU7A2ZuiQ3yFDqcT8mzgPHNdF0jP4TZ3-wrs_Xfyc3lILzTM1v527QhtJ2GMRUQTFU-V_5eYnRMhtRrme0g0pd8s-3SsgbQB2oopj5Ih2mcRBDWLRJLgHjMS08OcaFp-_fafv96hXjoVNKntxABFWO04EqOA4Uscc2teIiv_srDb4Mnlkc4OsRcb1t9_yBVIK0pAiqqM0VM4aeDRZbOGs7yBwwRe2RwYNJbwuYsFoH-Vjj3C5npojjRF1rconOO4T5kIaRzRLZqE0dC4WnGFW4HxEj1bOPZTnfOzl8lQdi4Q9Pfvv0n6C0qUKRch3YwEkFfqkyBlKrczxO0xfwSHZxhMTwEt5ZOz3s7RJABOTJFwQVjJUMLIoGWPluFmSIOYbGZmwKHwZSqNenPatTtuDIeMDGVSbHvw-VvKTWQ-Z_BBdKTh8kbZCN6mXIxJIh6G6-3kaAVei6z0UsygvCOo7qfoII0firAvWSPDqQUlIu8Oo8yOzjk05AWHMDi0GfEjDhv_H777Aot7ZCuh3uGEniC5jKCf_MdopeMJVLggBs-QQaxG176GPibRcCRkwREWUjaWia3eYG6FQ72We_8HJUO7dBj585pfJomPXsX00nRXLtGRdSFR02KLqClX1a69HU2gBTohmO1dECb_KtW8AWG5MsPBUvRAq8vfyWH3ftwgnDcZHhigB2QCm8FIOtvFU2hazeHPubwwC9DiyyufxOgVIUHFYACXM0WpLSUoWxPd5lTSofxVTuZWkUSZqUi1_EhXSV2hayyTH-n-BRS5cc8GjRRRIGv8kRAHcHsbCPkNHD4WvE1S1c25l4pJKrLq_uWDnNyvI57iOLrWM-op2khwPJXNWcqJ2nQx6wmduS5kw6Mwh7i-suHFk9u_jq7N40G9V0q7zDoUIpWvQmmfX7ky4dnjUL9parX124397Vt762olvFGUqu_DSQm_lbes1uQPkdy3fHfmmxfvsfzOgZW2KF5D6MWL9dId84CJjaVS29t5QKm7PslbDqLU86jAjAlBHrAipqJEcXA04YQJIClveUMChGpRbNjZIvMN1OWYX2wLVTi5xMKZc5pLR8Gps7ioT-IYqfuHIzi99P38tuSlv0sh7OMpMOafQ9nuRuOo-kAVgRQ4hUlXJbbLWboym8yqWEU5a2b0ZlVbfoLNMyuJtFFuYDOfj9JC9mdOaGanUdpz5PNwfmRm7lXUlZlpc1RyPhUi1aOmGKaJS3moGZLL8xhnFDKWKrkMpEouo5iV63klhTCWnCX4RzQKHFewlCw5YwIvBbl0bqTxwBEjMobJ6sJnQEKcxmLgDJI7cJvg5GtKx8aT0XQ4ctwQ_sWAVapKshthOd2tlMFoI2xL_tvluPXOigJx3BvnynHby41Go9Ve7dQ7rcZqp9lZcqaOW6uvLjdbK51mG37NtWandbfkXKtt68srjZV6u11vdhrtziedxt1_AafwQw?type=png)](https://mermaid.live/edit#pako:eNqVV91OIzcUfhVrVqxYibAkJE2YdqmA7KYIWhCBRZSskGfGk8wyGae2Bwg_d71oq0rbaqVW7U2vts_Q5-kLtI_QY3vsmQkT2OaG8fn5fPydH5sbx6cBcVxnyPBkhA67gwTBb2EBdUkYJQT1xTQmXEv9GHMOcnRJPBRGcew-IfWwFZIlLhg9J-6TlXqrveZly9plFIiR25hcfTrjHxj3MAzX_KZ1Dz1_pRE86j5h1Df7d8IWWbMADdIOVhuPAtBUmABWSStsWf-2Vw9xpb9G4KmniTom3lmfpswnHJ0OnH__-PEnKUNdLDDKFAPnjfaSv_0YR8GitHz3p16g52gTJ-f8M489X1_c8H2aJgJEMU7A2ZuiQ3yFDqcT8mzgPHNdF0jP4TZ3-wrs_Xfyc3lILzTM1v527QhtJ2GMRUQTFU-V_5eYnRMhtRrme0g0pd8s-3SsgbQB2oopj5Ih2mcRBDWLRJLgHjMS08OcaFp-_fafv96hXjoVNKntxABFWO04EqOA4Uscc2teIiv_srDb4Mnlkc4OsRcb1t9_yBVIK0pAiqqM0VM4aeDRZbOGs7yBwwRe2RwYNJbwuYsFoH-Vjj3C5npojjRF1rconOO4T5kIaRzRLZqE0dC4WnGFW4HxEj1bOPZTnfOzl8lQdi4Q9Pfvv0n6C0qUKRch3YwEkFfqkyBlKrczxO0xfwSHZxhMTwEt5ZOz3s7RJABOTJFwQVjJUMLIoGWPluFmSIOYbGZmwKHwZSqNenPatTtuDIeMDGVSbHvw-VvKTWQ-Z_BBdKTh8kbZCN6mXIxJIh6G6-3kaAVei6z0UsygvCOo7qfoII0firAvWSPDqQUlIu8Oo8yOzjk05AWHMDi0GfEjDhv_H777Aot7ZCuh3uGEniC5jKCf_MdopeMJVLggBs-QQaxG176GPibRcCRkwREWUjaWia3eYG6FQ72We_8HJUO7dBj585pfJomPXsX00nRXLtGRdSFR02KLqClX1a69HU2gBTohmO1dECb_KtW8AWG5MsPBUvRAq8vfyWH3ftwgnDcZHhigB2QCm8FIOtvFU2hazeHPubwwC9DiyyufxOgVIUHFYACXM0WpLSUoWxPd5lTSofxVTuZWkUSZqUi1_EhXSV2hayyTH-n-BRS5cc8GjRRRIGv8kRAHcHsbCPkNHD4WvE1S1c25l4pJKrLq_uWDnNyvI57iOLrWM-op2khwPJXNWcqJ2nQx6wmduS5kw6Mwh7i-suHFk9u_jq7N40G9V0q7zDoUIpWvQmmfX7ky4dnjUL9parX124397Vt762olvFGUqu_DSQm_lbes1uQPkdy3fHfmmxfvsfzOgZW2KF5D6MWL9dId84CJjaVS29t5QKm7PslbDqLU86jAjAlBHrAipqJEcXA04YQJIClveUMChGpRbNjZIvMN1OWYX2wLVTi5xMKZc5pLR8Gps7ioT-IYqfuHIzi99P38tuSlv0sh7OMpMOafQ9nuRuOo-kAVgRQ4hUlXJbbLWboym8yqWEU5a2b0ZlVbfoLNMyuJtFFuYDOfj9JC9mdOaGanUdpz5PNwfmRm7lXUlZlpc1RyPhUi1aOmGKaJS3moGZLL8xhnFDKWKrkMpEouo5iV63klhTCWnCX4RzQKHFewlCw5YwIvBbl0bqTxwBEjMobJ6sJnQEKcxmLgDJI7cJvg5GtKx8aT0XQ4ctwQ_sWAVapKshthOd2tlMFoI2xL_tvluPXOigJx3BvnynHby41Go9Ve7dQ7rcZqp9lZcqaOW6uvLjdbK51mG37NtWandbfkXKtt68srjZV6u11vdhrtziedxt1_AafwQw)
 
-## Core Logic & Data Flow
-The database operates on a daily or periodic update cycle orchestrated by the master procedure `usp_GKUpdate`. 
+## 1. Core Tables
+The database utilizes the following tables to store financial data, configuration, and calculation results:
 
+* **`Balances`**: Stores raw balance entries for accounts, including error logging and timestamps.
+* **`Accounts`**: Configuration table defining account metadata such as Name, TaxType, and Category.
+* **`GKCashFlow`**: The central logic table storing daily cash flow calculations, inflation adjustments, and Guyton-Klinger guardrail metrics (Upper/Lower limits, Pay Raises/Cuts).
+* **`GKCashFlowYTD`**: Summary table for Year-To-Date aggregations of assets, income, spending, and net worth.
+* **`GKYearOverYearStats`**: Stores longitudinal statistical data to track performance across years, including `Sequence_of_Returns`.
+* **`CompositePortfolio`**: Stores calculated composite prices grouped by TaxType and Closing Date.
+* **`Portfolio`**: Defines asset allocation, including Symbols, Names, Tax Types, and active Percentages.
+* **`ClosingPrices`**: Stores historical closing prices for individual symbols.
+* **`CPILatestNumbers`**: Stores the latest Consumer Price Index (CPI) reports (Seasonally and Non-Seasonally Adjusted).
+* **`FederalTaxRates`** & **`FederalStandardDeductions`**: Lookup tables for federal tax logic based on filing status.
 
-1.  **Ingest:** Market data (Closing Prices), Account Balances, and Inflation numbers (CPI) are updated.
-2.  **Aggregate:** Balances are summed by Tax Bucket (Taxable, Tax-Free, Deferred).
-3.  **Calculate:** The `GKCashFlow` engine calculates the daily "Paycheck" by applying inflation adjustments and checking against Upper/Lower spending guardrails.
-4.  **Decide:** The system determines the *Source* of the funds (Cash vs. Assets) based on the portfolio's 2-week moving average.
+## 2. Views
+Views are used to abstract complex filtering logic and moving average calculations.
 
----
+### `vw_MostRecentBalances`
+* **Description**: Returns the most recent valid balance for each account.
+* **Error Handling**: Implements logical error handling by filtering out rows where the `[Error]` column is populated or the `[Balance]` is zero/negative.
+* **Logic**: Uses `ROW_NUMBER()` to find the last "Good" record, preventing temporary scraping failures from breaking downstream dashboards.
 
-## Schema Summary
+### `vw_AccountBalancesByTaxTypeAndCategory`
+* **Description**: Aggregates account balances by Tax Type and Category.
+* **Logic**: Filters out specific categories (529, Liability, Operational-Cash) and non-account types. Handles NULLs for defensive coding.
 
-### 1. The Calculation Engine (Primary Tables)
+### `vw_CompositePortfolio_MovingAverage`
+* **Description**: Calculates a 14-day (2-week) moving average for the Composite Portfolio.
+* **Logic**: Determines the percentage of the current price relative to historical maximums per TaxType. Uses `NULLIF` to prevent divide-by-zero exceptions.
 
-| Table Name | Description | Key Columns |
-| :--- | :--- | :--- |
-| **`GKCashFlow`** | **The Master Ledger.** Records the daily state of the strategy, including total assets, calculated inflation rates, spending limits (Upper/Lower guardrails), and the final "Paycheck" amount. | `Date`, `Total_Assets`, `Inflated_Withdrawal_Amount`, `GK_Upper/Lower_Amount`, `Paycheck`, `Paycheck_Source` |
-| **`GKYearOverYearStats`** | Stores aggregated statistical performance data for annual reporting and analysis. | `Year`, `Taxable_Percent`, `Spent`, `CPI_U` |
-| **`CompositePortfolio`** | Tracks the calculated daily value of the investment portfolio based on weighted symbol performance. Used to trigger guardrails. | `ID`, `TaxType`, `Closing`, `CompositePrice` |
-
-### 2. Core Data & Inputs
-
-| Table Name | Description | Key Columns |
-| :--- | :--- | :--- |
-| **`Balances`** | Historical ledger of all account balances. Supports versioning by tracking multiple updates per sequence/date. | `ID`, `Name`, `Balance`, `LastUpdate` |
-| **`CPILatestNumbers`** | Stores scraped CPI (Consumer Price Index) reports to calculate daily inflation rates. | `ReportMonth`, `NSA_Monthly_Change`, `SA_Monthly_Change` |
-| **`ClosingPrices`** | Records daily market closing prices for symbols tracked in the portfolio. | `Closing`, `Symbol`, `Price` |
-| **`Portfolio`** | Defines the target asset allocation weights for specific symbols within tax buckets. | `Symbol`, `TaxType`, `Percent`, `Active` |
-| **`Accounts`** | Metadata mapping account names to Tax Types (Taxable, Roth, etc.) and Categories. | `Name`, `TaxType`, `Category` |
-
-### 3. Reference Data
-
-| Table Name | Description |
-| :--- | :--- |
-| **`FederalTaxRates`** | Stores historical and current federal tax brackets/rates by filing status. |
-| **`FederalStandardDeductions`** | Stores standard deduction amounts by tax year and filing status. |
-
----
-
-## Stored Procedures & Orchestration
+## 3. Stored Procedures
+The procedures are categorized by their role in the system: Orchestration, Calculation, Data Update, and Reporting.
 
 ### Master Orchestrator
-#### `usp_GKUpdate`
-* **Role:** The single entry point for daily updates.
-* **Parameters:** `@Date` (Defaults to `GETDATE()`).
-* **Execution Chain:**
-    1.  `usp_GKUpdateTaxableBalancesByDate`: Aggregates raw balances into the Cash Flow table.
-    2.  `usp_GKUpdateCPIU`: Fetches latest CPI, calculates daily inflation, and updates Cash Flow.
-    3.  `usp_GKCalculationUpdate`: Runs the core Guyton-Klinger math (Guardrails & Paycheck).
+* **`usp_GKUpdate`**: The master orchestration procedure for the daily update process. It executes child procedures in dependency order:
+    1.  Update Balances (`usp_GKUpdateTaxableBalancesByDate`)
+    2.  Update CPI Data (`usp_GKUpdateCPIU`)
+    3.  Run Core Calculations (`usp_GKCalculationUpdate`)
+    4.  Update Statistics (`usp_GKUpdateStats` & `usp_GKUpdateStatsMean`)
+    5.  Update Weekly/Monthly Paycheck sums (`usp_GKWeeklyMonthlyPaycheck`)
+    6.  Update YTD Summaries (`usp_GKCashFlowYTDSums`, `usp_GKCashFlowYTDLast`, `usp_GKCashFlowYTDNetWorth`)
 
-### Calculation Procedures
-#### `usp_GKCalculationUpdate`
-* **Purpose:** The "Brain" of the system.
-* **Logic:**
-    * **Jan 1st Reset:** If run on Jan 1, it resets the Upper (+20%) and Lower (-20%) spending guardrails based on current portfolio value.
-    * **Inflation Adjustment:** Adjusts the previous withdrawal amount by the calculated CPI-U.
-    * **Guardrail Check:** If the adjusted withdrawal exceeds the Upper/Lower limits, it applies a "Pay Cut" (-10%) or "Pay Raise" (+10%).
-    * **Paycheck Gen:** Calculates the final `Paycheck` amount and stamps the `Paycheck_Source` (from `usp_GetWithdrawalStrategy`).
+### Core Logic & Strategy
+* **`usp_GKCalculationUpdate`**: Performs the Guyton-Klinger capital preservation and prosperity rule calculations. It determines guardrail limits based on inflation-adjusted withdrawals and applies pay raises/cuts.
+* **`usp_GetWithdrawalStrategy`**: Calculates a dynamic withdrawal strategy using a 2-week moving average.
+    * **> 90% Valuation**: "100% from sale of assets."
+    * **< 80% Valuation**: "100% from cash."
+    * **80% - 90%**: Linear interpolation (sliding scale) between assets and cash.
+* **`usp_GKUpdateCPIU`**: Fetches latest CPI-U data and calculates daily inflation adjustments. Includes backtracking logic to find the last valid CPI number if the current date's data is missing.
 
-#### `usp_GKUpdateCPIU`
-* **Purpose:** Converts raw monthly CPI strings (e.g., "0.2%") into daily inflation factors.
-* **Logic:**
-    * Parses the latest `SA_Monthly_Change` from `CPILatestNumbers`.
-    * Calculates a daily inflation rate based on days in the month.
-    * Applies this rate to the `Inflated_Withdrawal_Percent` in `GKCashFlow`.
+### Data Ingestion & Updates
+* **`usp_AddManualBalance`**: Inserts a manual balance entry (specifically for Voya 401(k)) to address missing data gaps. Enforces a "One Entry Per Day" business rule.
+* **`usp_CalculateCompositePrices`**: Calculates weighted composite prices for active portfolio symbols using `Sum(Price * (PortfolioPercent / 100))`.
+* **`usp_Alert_CompositePortfolioUpdate`**: Checks if the 2-Week Moving Average Percent has crossed a 10% threshold and sends an HTML email alert via Database Mail.
 
-#### `usp_GetWithdrawalStrategy`
-* **Purpose:** Determines *where* the money comes from.
-* **Logic:** Checks the 2-Week Moving Average of the portfolio (via `vw_CompositePortfolio_MovingAverage`).
-    * **> 90%:** Sell Assets.
-    * **< 80%:** Use Cash.
-    * **80-90%:** Linear sliding scale (mixed Cash/Assets).
+### Reporting & Excel Extracts
+These procedures are designed specifically to feed Excel data connections:
+* **`usp_BalanceHistogramExcelTable`**: Generates a histogram of balance updates grouped by hour of day and day of week.
+* **`usp_GetPortfolioExcelTable`**: Retrieves active portfolio data, converting integer percentages to decimal scale (0.0 - 1.0).
+* **`usp_GKGetCashFlowByYearExcelTable`**: Retrieves detailed cash flow and calculation data for a specific year.
+* **`usp_GKStatsExcelTable`**: Retrieves Year-Over-Year stats with custom sorting (Chronological, then 'Goal', then 'Mean').
+* **`usp_RankingsExcelTable`**: Generates a ranked list of account updates with a date range footer.
 
-### Utility & Reporting
-* **`usp_Alert_CompositePortfolioUpdate`**: Checks if the Moving Average crossed a 10% threshold and sends an HTML email via Database Mail.
-* **`usp_GetBalanceUpdateHistogram_Pivot`**: Generates a heatmap (Day of Week vs. Hour) of data entry frequency for auditing.
-* **`usp_AddManualBalance`**: Helper to insert balances for accounts that cannot be automated (e.g., specific Voya 401k).
-
----
-
-## Key Views
-
-* **`vw_CompositePortfolio_MovingAverage`**: The "Speedometer" of the system. Calculates the 2-week moving average vs. the all-time high to determine the withdrawal strategy.
-* **`vw_AccountBalancesByTaxTypeAndCategory`**: Summarizes net worth by tax bucket (Taxable, Tax-Free, Deferred, Cash), excluding non-investment assets like 529s or operational cash.
-
-## Configuration Notes
-* **Database Mail:** The alerting system requires a profile named `'MyMailProfile'`.
-* **Hardcoded IDs:** Some procedures (e.g., `usp_AddManualBalance`) contain hardcoded `SequenceID`s specific to the owner's data.
-* **SQL Version:** Script sets `COMPATIBILITY_LEVEL = 150` (SQL Server 2019).
+## 4. Error Handling Strategy
+* **Transactions**: `SET XACT_ABORT ON` is used in key procedures to ensure immediate rollback on severe errors.
+* **Try/Catch**: Procedures utilize `BEGIN TRY...BEGIN CATCH` blocks to capture error severity and state, re-raising them to the calling application.
+* **Defensive Views**: Views filter out specific error codes logged during scraping to prevent "poison" data from breaking reports.
 
 ## License
 
