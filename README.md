@@ -1,9 +1,13 @@
 # Guyton-Klinger Withdrawals Database Documentation
 
 **Database Name:** `[Guyton-Klinger-Withdrawals]`
+
 **Developer:** Cave Arnold
+
 **AI Assistant:** Gemini
-**Script Date:** February 10, 2026
+
+**Script Date:** February 17, 2026
+
 
 ## Overview
 This database implements a financial withdrawal strategy based on the Guyton-Klinger decision rules. It manages account balances, tracks portfolio performance against moving averages, calculates inflation adjustments (CPI-U), and enforces capital preservation and prosperity guardrails to determine safe withdrawal rates.
@@ -81,5 +85,6 @@ These procedures are designed specifically to feed Excel data connections:
 * **Defensive Views**: Views filter out specific error codes logged during scraping to prevent "poison" data from breaking reports.
 
 ## License
+
 
 This project is licensed under the [GPL-3.0 License](LICENSE.txt).
