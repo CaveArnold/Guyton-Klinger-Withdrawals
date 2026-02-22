@@ -6,8 +6,9 @@
 
 **AI Assistant:** Gemini
 
-**Script Date:** February 17, 2026
+**Script Date:** February 21, 2026
 
+**Release Version:** 1.2
 
 ## Overview
 This database implements a financial withdrawal strategy based on the Guyton-Klinger decision rules. It manages account balances, tracks portfolio performance against moving averages, calculates inflation adjustments (CPI-U), and enforces capital preservation and prosperity guardrails to determine safe withdrawal rates.
@@ -20,7 +21,7 @@ This database implements a financial withdrawal strategy based on the Guyton-Kli
 The database utilizes the following tables to store financial data, configuration, and calculation results:
 
 * **`Balances`**: Stores raw balance entries for accounts, including error logging and timestamps.
-* **`Accounts`**: Configuration table defining account metadata such as Name, TaxType, and Category.
+* **`Accounts`**: Configuration table defining account metadata such as Name, TaxType, Category and Active.
 * **`GKCashFlow`**: The central logic table storing daily cash flow calculations, inflation adjustments, and Guyton-Klinger guardrail metrics (Upper/Lower limits, Pay Raises/Cuts).
 * **`GKCashFlowYTD`**: Summary table for Year-To-Date aggregations of assets, income, spending, and net worth.
 * **`GKYearOverYearStats`**: Stores longitudinal statistical data to track performance across years, including `Sequence_of_Returns`.
@@ -34,7 +35,7 @@ The database utilizes the following tables to store financial data, configuratio
 Views are used to abstract complex filtering logic and moving average calculations.
 
 ### `vw_MostRecentBalances`
-* **Description**: Returns the most recent valid balance for each account.
+* **Description**: Returns the most recent valid balance for each active account.
 * **Error Handling**: Implements logical error handling by filtering out rows where the `[Error]` column is populated or the `[Balance]` is zero/negative.
 * **Logic**: Uses `ROW_NUMBER()` to find the last "Good" record, preventing temporary scraping failures from breaking downstream dashboards.
 
@@ -60,7 +61,7 @@ The procedures are categorized by their role in the system: Orchestration, Calcu
 
 ### Core Logic & Strategy
 * **`usp_GKCalculationUpdate`**: Performs the Guyton-Klinger capital preservation and prosperity rule calculations. It determines guardrail limits based on inflation-adjusted withdrawals and applies pay raises/cuts.
-* **`usp_GetWithdrawalStrategy`**: Calculates a dynamic withdrawal strategy using a 2-week moving average.
+* **`usp_GetWithdrawalStrategy`**: Calculates a dynamic withdrawal strategy using a 2-week moving average and suggests which tax type to sell based on user set goals.
     * **> 90% Valuation**: "100% from sale of assets."
     * **< 80% Valuation**: "100% from cash."
     * **80% - 90%**: Linear interpolation (sliding scale) between assets and cash.
@@ -86,5 +87,5 @@ These procedures are designed specifically to feed Excel data connections:
 
 ## License
 
-
 This project is licensed under the [GPL-3.0 License](LICENSE.txt).
+
